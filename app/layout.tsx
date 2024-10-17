@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar"
 import { cn } from "@/lib/utils"
 import TanStackQueryProvider from "@/utils/providers/TanStackQuery.Provider"
 import type { Metadata } from "next"
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn("antialiased", geistSans.variable)}>
+        <Navbar />
         <TanStackQueryProvider>{children}</TanStackQueryProvider>
       </body>
     </html>

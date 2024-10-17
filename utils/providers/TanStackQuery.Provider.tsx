@@ -10,6 +10,7 @@ export default function TanStackQueryProvider({ children }: { children: React.Re
         defaultOptions: {
           queries: {
             staleTime: 60 * 1000 * 2,
+            retry: 5,
           },
         },
       }),
