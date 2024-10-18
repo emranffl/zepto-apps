@@ -4,12 +4,23 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const page = searchParams.get("page") || 1
   const search = searchParams.get("search") || ""
+  const wishlistIds = searchParams.get("ids") || undefined
 
   try {
-    const response = await fetch(
-      process.env.API_BASE_URL + `/books?page=${page}&search=${search}`,
-      { next: { revalidate: 60 }, signal: AbortSignal.timeout(60_000) },
-    )
+    let url = process.env.API_BASE_URL!
+
+    if (search) {
+      url += `/books?page=${page}&search=${search}`
+    } else if (wishlistIds) {
+      url += `/books?ids=${wishlistIds}`
+    } else {
+      url += `/books?page=${page}`
+    }
+
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(60_000),
+    })
 
     if (!response.ok) {
       return NextResponse.json({ error: `Failed to fetch data` }, { status: response.status })

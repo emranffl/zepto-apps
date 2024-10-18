@@ -44,7 +44,7 @@ export function Navbar() {
         },
         {
           title: "WishList",
-          slug: LINKS.BOOK.DYNAMIC("").home,
+          slug: LINKS.WISHLIST.home,
           description: null,
           children: null,
         },
@@ -90,7 +90,7 @@ export function Navbar() {
       <div className="container hidden h-16 items-center justify-between xl:flex">
         <Link
           href="/"
-          className="opacity-90 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100"
+          className="text-5xl font-bold opacity-90 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100"
         >
           ZA
         </Link>
@@ -140,7 +140,7 @@ export function Navbar() {
       >
         <Link
           href="/"
-          className="opacity-90 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100"
+          className="text-4xl font-bold opacity-90 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100"
         >
           ZA
         </Link>
@@ -205,17 +205,13 @@ export function Navbar() {
               const animationDelay = 0.05
 
               return (
-                <Fragment
-                  // key={`${item.title}-${mobNav.level}-${index}`}
-                  key={item.title}
-                >
+                <Fragment key={item.title}>
                   <motion.div
                     initial={{
                       opacity: 0,
                       x: -104,
                     }}
                     transition={{
-                      // duration: duration,
                       type: "tween",
                       delay: animationDelay * index,
                     }}
@@ -223,9 +219,6 @@ export function Navbar() {
                       opacity: 1,
                       x: 0,
                     }}
-                    // viewport={{
-                    // once: mobNav.level === 0 ? true : false,
-                    // }}
                   >
                     <Link onClick={handleHamburger} href={item.slug} className={className}>
                       {item.title}

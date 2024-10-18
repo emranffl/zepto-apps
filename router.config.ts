@@ -10,6 +10,9 @@ export const LINKS = {
       } as const
     },
   },
+  WISHLIST: {
+    home: "/wishlist",
+  },
 } as const
 
 /**

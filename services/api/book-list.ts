@@ -48,17 +48,21 @@ interface Formats {
   "text/html; charset=us-ascii"?: string
 }
 
-export const getBookList = async ({
-  pageNumber = 1,
-  searchText = "",
-}: {
+interface GetBookListProps {
   pageNumber: number
   searchText: string
-}) => {
+}
+
+export const getBookList = async (
+  { pageNumber = 1, searchText = "" }: GetBookListProps,
+  wishlistIds: number[] | undefined = undefined,
+) => {
   const data = await getAPIResponse({
     apiPath: searchText
       ? `/books?page=${pageNumber}&search=${searchText}`
-      : `/books?page=${pageNumber}`,
+      : wishlistIds
+        ? `/books?ids=${wishlistIds.join(",")}`
+        : `/books?page=${pageNumber}`,
   })
   return data as BookListAPIProps
 }
