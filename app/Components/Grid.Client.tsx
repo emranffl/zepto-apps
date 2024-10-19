@@ -70,7 +70,7 @@ const Grid = ({ isWishlistRoute }: { isWishlistRoute?: true }) => {
     <>
       {/* // + Search & filter */}
       {!isWishlistRoute && (
-        <div className="bx-container sticky top-10 z-10 grid gap-5 bg-background py-5 xl:top-16">
+        <div className="sticky top-10 z-10 grid gap-5 bg-background py-5 bx-container xl:top-16">
           <div className="flex items-center justify-end gap-2">
             <DebouncedSearchInput value={searchText} onChange={handleInput} />
             <TopicFilter bookshelves={bookshelves} onSelect={handleInput} selectedItem={topic} />
