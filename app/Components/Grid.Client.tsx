@@ -31,7 +31,7 @@ const Grid = ({ isWishlistRoute }: { isWishlistRoute?: true }) => {
   }
 
   // * Fetch book list
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: [
       QUERY.BOOK.LIST({
         pageNumber,
@@ -60,6 +60,11 @@ const Grid = ({ isWishlistRoute }: { isWishlistRoute?: true }) => {
       setTopic("")
     }
   }, [isWishlistRoute, setPageNumber, setSearchText, setTopic])
+
+  // + Error handling
+  if (isError) {
+    return <div className="text-center text-red-500">An error occurred, please try again later</div>
+  }
 
   return (
     <>
