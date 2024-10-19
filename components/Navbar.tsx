@@ -87,7 +87,7 @@ export function Navbar() {
   return (
     <nav className="fixed inset-x-0 top-0 z-[999] border-b border-slate-900/10 bg-white dark:border-slate-300/10 dark:bg-background">
       {/* //=> Desktop Menu */}
-      <div className="container hidden h-16 items-center justify-between xl:flex">
+      <div className="container hidden h-16 items-center justify-between sm:flex">
         <Link
           href="/"
           className="text-5xl font-bold opacity-90 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100"
@@ -134,7 +134,7 @@ export function Navbar() {
       {/* //=> Mobile Menu */}
       <div
         className={cn(
-          "container flex items-center justify-between xl:hidden",
+          "container flex items-center justify-between sm:hidden",
           scrolling ? "h-16" : "h-16",
         )}
       >
@@ -175,7 +175,7 @@ export function Navbar() {
       {navOpen && (
         <div
           className={cn(
-            "absolute left-0 right-0 top-20 h-[100dvh] bg-gradient-to-b from-background via-background backdrop-blur transition xl:hidden",
+            "absolute left-0 right-0 top-20 h-[100dvh] bg-gradient-to-b from-background via-background backdrop-blur transition sm:hidden",
             scrolling ? "top-16" : "top-16",
           )}
         >
