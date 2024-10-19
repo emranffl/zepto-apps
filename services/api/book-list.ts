@@ -51,18 +51,21 @@ interface Formats {
 interface GetBookListProps {
   pageNumber: number
   searchText: string
+  topic: string
 }
 
 export const getBookList = async (
-  { pageNumber = 1, searchText = "" }: GetBookListProps,
+  { pageNumber = 1, searchText = "", topic }: GetBookListProps,
   wishlistIds: number[] | undefined = undefined,
 ) => {
   const data = await getAPIResponse({
     apiPath: searchText
-      ? `/books?page=${pageNumber}&search=${searchText}`
-      : wishlistIds
-        ? `/books?ids=${wishlistIds.join(",")}`
-        : `/books?page=${pageNumber}`,
+      ? `/books?page=${pageNumber}&search=${searchText}&topic=${topic}`
+      : topic
+        ? `/books?topic=${topic}`
+        : wishlistIds
+          ? `/books?ids=${wishlistIds.join(",")}`
+          : `/books?page=${pageNumber}`,
   })
   return data as BookListAPIProps
 }

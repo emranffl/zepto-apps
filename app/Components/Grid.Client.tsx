@@ -1,63 +1,94 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { QUERY } from "@/query.config"
 import { getBookList } from "@/services/api/book-list"
+import { useBookshelves } from "@/services/hooks/useBookshelves"
+import { useUserPreferencesStore } from "@/services/hooks/useUserPreferencesStore"
 import { useWishlistStore } from "@/zustand/wishlist"
 import { useQuery } from "@tanstack/react-query"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useState } from "react"
+import { useEffect } from "react"
 import BookCard from "./BookCard"
 import BookCardSkeleton from "./BookCard.Skeleton"
+import DebouncedSearchInput from "./DebounceInput.Client"
+import Pagination from "./Pagination.Client"
+import TopicFilter from "./TopicFilter.Client"
 
 const Grid = ({ isWishlistRoute }: { isWishlistRoute?: true }) => {
-  const [state, setState] = useState({ pageNumber: 1, searchText: "" })
+  // * Fetch user preferences from Zustand
+  const { pageNumber, searchText, topic, setPageNumber, setSearchText, setTopic } =
+    useUserPreferencesStore()
+
+  // * Fetch wishlist
   const { wishlist } = useWishlistStore()
 
+  // * Handle input for search and filter
+  const handleInput = (newValue: string, type: "searchText" | "topic") => {
+    if (type === "searchText") {
+      setSearchText(newValue)
+    } else {
+      setTopic(newValue)
+    }
+  }
+
+  // * Fetch book list
   const { data, isLoading } = useQuery({
     queryKey: [
-      QUERY.BOOK.LIST({ pageNumber: state.pageNumber, searchText: state.searchText }).key,
+      QUERY.BOOK.LIST({
+        pageNumber,
+        searchText,
+        topic,
+      }).key,
       isWishlistRoute ? wishlist : undefined,
     ],
     queryFn: async () =>
-      await getBookList(
-        { pageNumber: state.pageNumber, searchText: state.searchText },
-        isWishlistRoute ? wishlist : undefined,
-      ),
+      await getBookList({ pageNumber, searchText, topic }, isWishlistRoute ? wishlist : undefined),
   })
+
+  // * Fetch bookshelves
+  const bookshelves = useBookshelves(data?.results || [])
+
+  // * Set Zustand state when component mounts
+  useEffect(() => {
+    // * Set page number to 1 when not on wishlist route
+    if (!isWishlistRoute) {
+      setPageNumber(1)
+    }
+
+    // * Set search text and topic to empty string when on wishlist route
+    if (isWishlistRoute) {
+      setSearchText("")
+      setTopic("")
+    }
+  }, [isWishlistRoute, setPageNumber, setSearchText, setTopic])
 
   return (
     <>
+      {/* // + Search & filter */}
+      {!isWishlistRoute && (
+        <div className="bx-container sticky top-10 z-10 grid gap-5 bg-background py-5 xl:top-16">
+          <div className="flex items-center justify-end gap-2">
+            <DebouncedSearchInput value={searchText} onChange={handleInput} />
+            <TopicFilter bookshelves={bookshelves} onSelect={handleInput} selectedItem={topic} />
+          </div>
+        </div>
+      )}
+
       {/* // + Card grid */}
       <div className="grid gap-5 xl:grid-cols-2">
-        {/* <pre className="col-span-full whitespace-pre-wrap">{JSON.stringify(data, null, 2)}</pre> */}
         {data?.results.map((book) => <BookCard key={book.id} book={book} />)}
 
         {/* // + Loading Skeleton */}
-        {isLoading && Array.from({ length: 8 }).map((_, i) => <BookCardSkeleton key={i} />)}
+        {isLoading && Array.from({ length: 4 }).map((_, i) => <BookCardSkeleton key={i} />)}
 
         {/* // + Pagination */}
         {!isWishlistRoute && (
-          <div className="col-span-full grid h-12 grid-cols-2 gap-5">
-            <Button
-              variant={"outline"}
-              onClick={() => setState((prev) => ({ ...prev, pageNumber: prev.pageNumber - 1 }))}
-              disabled={state.pageNumber === 1 || data?.previous === null || isLoading}
-              className="flex h-full justify-between rounded-xl"
-            >
-              <ChevronLeft />
-              Previous
-            </Button>
-            <Button
-              variant={"outline"}
-              onClick={() => setState((prev) => ({ ...prev, pageNumber: prev.pageNumber + 1 }))}
-              disabled={data?.next === null || isLoading}
-              className="flex h-full justify-between rounded-xl"
-            >
-              Next
-              <ChevronRight />
-            </Button>
-          </div>
+          <Pagination
+            currentPage={pageNumber}
+            onPageChange={(newPage) => setPageNumber(newPage)}
+            hasNextPage={data?.next !== null}
+            hasPreviousPage={data?.previous !== null}
+            isLoading={isLoading}
+          />
         )}
       </div>
     </>

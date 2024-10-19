@@ -3,8 +3,16 @@
  */
 export const QUERY = {
   BOOK: {
-    LIST: ({ pageNumber, searchText }: { pageNumber: number | string; searchText: string }) => {
-      return { key: `book-list-${pageNumber}-${searchText}` as const }
+    LIST: ({
+      pageNumber,
+      searchText,
+      topic,
+    }: {
+      pageNumber: number | string
+      searchText: string
+      topic: string
+    }) => {
+      return { key: `book-list-${pageNumber}-${searchText}-${topic}` as const }
     },
     DYNAMIC: (slug: string) => {
       return { key: `book-details-${slug}` as const }

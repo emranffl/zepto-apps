@@ -4,13 +4,16 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const page = searchParams.get("page") || 1
   const search = searchParams.get("search") || ""
+  const topic = searchParams.get("topic") || ""
   const wishlistIds = searchParams.get("ids") || undefined
 
   try {
     let url = process.env.API_BASE_URL!
 
     if (search) {
-      url += `/books?page=${page}&search=${search}`
+      url += `/books?page=${page}&search=${encodeURI(search)}`
+    } else if (topic) {
+      url += `/books?topic=${topic}`
     } else if (wishlistIds) {
       url += `/books?ids=${wishlistIds}`
     } else {

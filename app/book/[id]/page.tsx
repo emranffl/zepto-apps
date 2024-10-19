@@ -13,7 +13,7 @@ const Page = async ({ params: { id } }: { params: { id: string } }) => {
   return (
     <>
       <section className="container h-full space-y-12 py-16 sm:py-24">
-        <pre className="whitespace-pre-wrap">{JSON.stringify(data, null, 2)}</pre>
+        {/* <pre className="whitespace-pre-wrap">{JSON.stringify(data, null, 2)}</pre> */}
         <BookDetails {...data} />
       </section>
     </>
